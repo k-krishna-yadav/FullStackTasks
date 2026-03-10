@@ -3,59 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Registration</title>
+    <title>Task 2: Student Records Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h2>📝 Student Registration Form</h2>
-        
-        <?php
-        if(isset($_GET['success'])) {
-            echo "<div class='success-msg'>✅ Student registered successfully!</div>";
-        }
-        if(isset($_GET['error'])) {
-            echo "<div class='error-msg'>❌ Error: Email already exists!</div>";
-        }
-        ?>
-        
-        <form action="register.php" method="POST">
-            <div class="form-group">
-                <label>Full Name:</label>
-                <input type="text" name="name" placeholder="Enter full name" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Email:</label>
-                <input type="email" name="email" placeholder="student@example.com" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Date of Birth:</label>
-                <input type="date" name="dob" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Department:</label>
-                <select name="department" required>
-                    <option value="">Select Department</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="Physics">Physics</option>
+        <h1>📊 Student Records Dashboard</h1>
+        <p class="subtitle">Task 2: Data Retrieval & Sorting | Running on localhost:3000</p>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Sort by:</label>
+                <select id="sortBy">
+                    <option value="name">Name</option>
+                    <option value="date">Registration Date</option>
+                </select>
+                
+                <select id="sortOrder">
+                    <option value="asc">Ascending ↑</option>
+                    <option value="desc">Descending ↓</option>
                 </select>
             </div>
-            
-            <div class="form-group">
-                <label>Phone:</label>
-                <input type="tel" name="phone" placeholder="10 digit number" pattern="[0-9]{10}" required>
+
+            <div class="control-group">
+                <label>Filter by Department:</label>
+                <select id="departmentFilter">
+                    <option value="all">All Departments</option>
+                </select>
             </div>
-            
-            <button type="submit">Register Student</button>
-        </form>
+
+            <button onclick="loadStudents()" class="refresh-btn">🔄 Refresh Data</button>
+        </div>
+
+        <div class="stats-container" id="stats">
+            <div class="stat-card loading-stats">Loading statistics...</div>
+        </div>
+
+        <table id="studentTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Registration Date</th>
+                </tr>
+            </thead>
+            <tbody id="studentBody">
+                <tr>
+                    <td colspan="4" class="loading">Loading data from server...</td>
+                </tr>
+            </tbody>
+        </table>
         
-        <h3>📋 Registered Students List</h3>
-        <?php include 'display.php'; ?>
+        <div class="server-status">
+            <span class="status-dot"></span> Connected to localhost:3000
+        </div>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
