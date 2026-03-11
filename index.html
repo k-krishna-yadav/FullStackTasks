@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 7: Interactive Feedback Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="task-header">
+            <span class="task-badge">Task 7</span>
+            <h1>📝 Interactive Feedback Form</h1>
+        </div>
+        <p class="subtitle">Using JavaScript Events: Keypress, Mouse Hover, Double-click</p>
+
+        <div class="form-container">
+            <!-- Feedback Form -->
+            <div class="form-section">
+                <h2>Share Your Feedback</h2>
+                <p class="form-subtitle">Double-click submit button to confirm • Hover over fields for effects</p>
+
+                <div id="messageBox" class="message-box"></div>
+
+                <form id="feedbackForm" onsubmit="return false;">
+                    <!-- Name Field -->
+                    <div class="form-group" id="nameGroup" 
+                         onmouseenter="highlightField('nameGroup')" 
+                         onmouseleave="unhighlightField('nameGroup')">
+                        <label for="name">
+                            Full Name <span class="required">*</span>
+                            <span class="hint">(Min 3 characters)</span>
+                        </label>
+                        <input type="text" 
+                               id="name" 
+                               name="name" 
+                               placeholder="Enter your full name"
+                               onkeyup="validateName()"
+                               onkeypress="handleKeyPress(event, 'name')"
+                               onblur="validateName()">
+                        <div class="error-message" id="nameError"></div>
+                        <div class="character-count" id="nameCount">0/50</div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="form-group" id="emailGroup"
+                         onmouseenter="highlightField('emailGroup')"
+                         onmouseleave="unhighlightField('emailGroup')">
+                        <label for="email">
+                            Email Address <span class="required">*</span>
+                            <span class="hint">(Valid email format)</span>
+                        </label>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               placeholder="you@example.com"
+                               onkeyup="validateEmail()"
+                               onkeypress="handleKeyPress(event, 'email')"
+                               onblur="validateEmail()">
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+
+                    <!-- Rating Field -->
+                    <div class="form-group" id="ratingGroup"
+                         onmouseenter="highlightField('ratingGroup')"
+                         onmouseleave="unhighlightField('ratingGroup')">
+                        <label>
+                            Rating <span class="required">*</span>
+                            <span class="hint">(Click to rate)</span>
+                        </label>
+                        <div class="rating-container">
+                            <div class="rating-stars">
+                                <span class="star" data-rating="1" onclick="setRating(1)" onmouseenter="previewRating(1)" onmouseleave="resetRatingPreview()">★</span>
+                                <span class="star" data-rating="2" onclick="setRating(2)" onmouseenter="previewRating(2)" onmouseleave="resetRatingPreview()">★</span>
+                                <span class="star" data-rating="3" onclick="setRating(3)" onmouseenter="previewRating(3)" onmouseleave="resetRatingPreview()">★</span>
+                                <span class="star" data-rating="4" onclick="setRating(4)" onmouseenter="previewRating(4)" onmouseleave="resetRatingPreview()">★</span>
+                                <span class="star" data-rating="5" onclick="setRating(5)" onmouseenter="previewRating(5)" onmouseleave="resetRatingPreview()">★</span>
+                            </div>
+                            <span class="rating-text" id="ratingText">Select rating</span>
+                        </div>
+                        <input type="hidden" id="rating" value="0">
+                        <div class="error-message" id="ratingError"></div>
+                    </div>
+
+                    <!-- Category Field -->
+                    <div class="form-group" id="categoryGroup"
+                         onmouseenter="highlightField('categoryGroup')"
+                         onmouseleave="unhighlightField('categoryGroup')">
+                        <label for="category">
+                            Feedback Category <span class="required">*</span>
+                        </label>
+                        <select id="category" 
+                                name="category"
+                                onchange="validateCategory()"
+                                onkeypress="handleKeyPress(event, 'category')">
+                            <option value="">Select a category</option>
+                            <option value="product">Product Feedback</option>
+                            <option value="service">Service Experience</option>
+                            <option value="suggestion">Suggestion</option>
+                            <option value="complaint">Complaint</option>
+                            <option value="compliment">Compliment</option>
+                        </select>
+                        <div class="error-message" id="categoryError"></div>
+                    </div>
+
+                    <!-- Feedback Field -->
+                    <div class="form-group" id="feedbackGroup"
+                         onmouseenter="highlightField('feedbackGroup')"
+                         onmouseleave="unhighlightField('feedbackGroup')">
+                        <label for="feedback">
+                            Your Feedback <span class="required">*</span>
+                            <span class="hint">(Min 10 characters)</span>
+                        </label>
+                        <textarea id="feedback" 
+                                  name="feedback" 
+                                  rows="5" 
+                                  placeholder="Please share your detailed feedback..."
+                                  onkeyup="validateFeedback()"
+                                  onkeypress="handleKeyPress(event, 'feedback')"
+                                  onblur="validateFeedback()"></textarea>
+                        <div class="error-message" id="feedbackError"></div>
+                        <div class="character-count" id="feedbackCount">0/500</div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="button" 
+                            class="submit-btn" 
+                            id="submitBtn"
+                            onclick="handleSubmit()"
+                            ondblclick="confirmSubmit()"
+                            onmouseenter="this.style.transform='scale(1.02)'"
+                            onmouseleave="this.style.transform='scale(1)'">
+                        📤 Submit Feedback (Double-click to confirm)
+                    </button>
+                </form>
+
+                <div class="event-demo">
+                    <h3>🎯 Event Demonstration</h3>
+                    <div class="event-log" id="eventLog">
+                        <p>Events will appear here...</p>
+                    </div>
+                    <button class="clear-btn" onclick="clearLog()">Clear Log</button>
+                </div>
+            </div>
+
+            <!-- Live Preview Section -->
+            <div class="preview-section" id="previewSection"
+                 onmouseenter="showPreview()"
+                 onmouseleave="hidePreview()">
+                <h2>👁️ Live Preview</h2>
+                <p class="hint">(Hover here to see preview)</p>
+                
+                <div class="preview-card" id="previewCard">
+                    <div class="preview-header">
+                        <span class="preview-badge" id="previewCategory">Category</span>
+                        <span class="preview-rating" id="previewRating">★ 0</span>
+                    </div>
+                    <div class="preview-body">
+                        <h3 id="previewName">Your Name</h3>
+                        <p id="previewEmail">email@example.com</p>
+                        <p id="previewFeedback">Your feedback will appear here...</p>
+                    </div>
+                    <div class="preview-footer">
+                        <small>Preview updates as you type</small>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <h3>📊 Form Statistics</h3>
+                    <div class="stat-item">
+                        <span>Completed fields:</span>
+                        <span id="completedFields">0/6</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Valid fields:</span>
+                        <span id="validFields">0/6</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Form completeness:</span>
+                        <span id="formCompleteness">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Cheat Sheet -->
+        <div class="cheat-sheet">
+            <h3>📚 JavaScript Events Used</h3>
+            <div class="events-grid">
+                <div class="event-card">
+                    <span class="event-name">onkeyup</span>
+                    <p>Real-time validation while typing</p>
+                </div>
+                <div class="event-card">
+                    <span class="event-name">onkeypress</span>
+                    <p>Track key presses in fields</p>
+                </div>
+                <div class="event-card">
+                    <span class="event-name">onmouseenter</span>
+                    <p>Highlight field on hover</p>
+                </div>
+                <div class="event-card">
+                    <span class="event-name">onmouseleave</span>
+                    <p>Remove highlight when hover ends</p>
+                </div>
+                <div class="event-card">
+                    <span class="event-name">ondblclick</span>
+                    <p>Double-click submit confirmation</p>
+                </div>
+                <div class="event-card">
+                    <span class="event-name">onchange</span>
+                    <p>Category selection change</p>
+                </div>
+                <div class="event-card">
+                    <span class="event-name">onblur</span>
+                    <p>Validate when leaving field</p>
+                </div>
+                <div class="event-card">
+                    <span class="event-name">onclick</span>
+                    <p>Star rating selection</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="../Task6_LoggingSystem/" class="nav-link">← Task 6</a>
+            <a href="#" class="nav-link">Task 8 →</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
