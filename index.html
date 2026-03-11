@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 5: Payment Simulation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="task-header">
+            <span class="task-badge">Task 5</span>
+            <h1>💰 Payment Simulation System</h1>
+        </div>
+        <p class="subtitle">Using MySQL Transactions: COMMIT on Success, ROLLBACK on Failure</p>
+
+        <!-- Stats Dashboard -->
+        <div class="stats-grid" id="stats">
+            <div class="stat-card loading">Loading stats...</div>
+        </div>
+
+        <!-- Main Payment Interface -->
+        <div class="payment-interface">
+            <div class="payment-form">
+                <h2>Process Payment</h2>
+                <div id="paymentMessage" class="message"></div>
+                
+                <div class="form-group">
+                    <label>Select Customer (Sender)</label>
+                    <select id="senderSelect" onchange="updateSenderBalance()">
+                        <option value="">Choose customer...</option>
+                    </select>
+                    <div class="balance-info" id="senderBalance">Balance: $0.00</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Select Merchant (Receiver)</label>
+                    <select id="receiverSelect" onchange="updateReceiverBalance()">
+                        <option value="">Choose merchant...</option>
+                    </select>
+                    <div class="balance-info" id="receiverBalance">Balance: $0.00</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Amount ($)</label>
+                    <input type="number" id="amount" min="0.01" step="0.01" placeholder="Enter amount">
+                </div>
+
+                <div class="form-group">
+                    <label>Description (Optional)</label>
+                    <input type="text" id="description" placeholder="e.g., Amazon Purchase - Electronics">
+                </div>
+
+                <button onclick="processPayment()" class="payment-btn" id="paymentBtn">
+                    <span>💳 Process Payment</span>
+                    <span class="loading-spinner" id="paymentSpinner" style="display: none;">⏳</span>
+                </button>
+            </div>
+
+            <div class="transaction-info">
+                <h3>📋 How Transactions Work</h3>
+                <div class="info-box">
+                    <div class="info-step">
+                        <span class="step-number">1</span>
+                        <span>BEGIN TRANSACTION</span>
+                    </div>
+                    <div class="info-step">
+                        <span class="step-number">2</span>
+                        <span>Check sender balance</span>
+                    </div>
+                    <div class="info-step">
+                        <span class="step-number">3</span>
+                        <span>Deduct from sender</span>
+                    </div>
+                    <div class="info-step">
+                        <span class="step-number">4</span>
+                        <span>Add to receiver</span>
+                    </div>
+                    <div class="info-step success">
+                        <span class="step-number">✓</span>
+                        <span>If success: COMMIT</span>
+                    </div>
+                    <div class="info-step error">
+                        <span class="step-number">✗</span>
+                        <span>If failure: ROLLBACK</span>
+                    </div>
+                </div>
+
+                <div class="test-scenarios">
+                    <h4>🎯 Test Scenarios:</h4>
+                    <button onclick="testScenario('success')" class="test-btn">✅ Successful Payment</button>
+                    <button onclick="testScenario('insufficient')" class="test-btn">❌ Insufficient Balance</button>
+                    <button onclick="testScenario('invalid')" class="test-btn">⚠️ Invalid Account</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users List -->
+        <div class="users-section">
+            <h2>Account Balances</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Balance</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="5" class="loading">Loading users...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="transactions-section">
+            <h2>Recent Transactions</h2>
+            <div class="transaction-filters">
+                <select id="statusFilter" onchange="loadTransactions()">
+                    <option value="">All Status</option>
+                    <option value="completed">Completed</option>
+                    <option value="failed">Failed</option>
+                    <option value="pending">Pending</option>
+                </select>
+                <select id="typeFilter" onchange="loadTransactions()">
+                    <option value="">All Types</option>
+                    <option value="payment">Payments</option>
+                    <option value="refund">Refunds</option>
+                </select>
+            </div>
+            <div class="transactions-list" id="transactionsList">
+                <div class="loading">Loading transactions...</div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="../Task4_OrderManagement/" class="nav-link">← Task 4</a>
+            <a href="#" class="nav-link">Task 6 →</a>
+        </div>
+
+        <!-- Database Info -->
+        <div class="db-info">
+            <span class="db-dot"></span>
+            <span>Connected to MySQL | Database: payment_system</span>
+            <span class="transaction-badge">Using COMMIT / ROLLBACK</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
