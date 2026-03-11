@@ -3,60 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task 2: Student Records Dashboard</title>
+    <title>Task 3: Login System</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>📊 Student Records Dashboard</h1>
-        <p class="subtitle">Task 2: Data Retrieval & Sorting | Running on localhost:3000</p>
+        <div class="task-header">
+            <span class="task-badge">Task 3</span>
+            <h1>🔐 Login System with Validation</h1>
+        </div>
+        <p class="subtitle">JavaScript Validation + Session Management</p>
 
-        <div class="controls">
-            <div class="control-group">
-                <label>Sort by:</label>
-                <select id="sortBy">
-                    <option value="name">Name</option>
-                    <option value="date">Registration Date</option>
-                </select>
+        <div class="login-container">
+            <div class="login-box">
+                <h2>Welcome Back</h2>
+                <p class="login-subtitle">Please login to your account</p>
+
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
                 
-                <select id="sortOrder">
-                    <option value="asc">Ascending ↑</option>
-                    <option value="desc">Descending ↓</option>
-                </select>
+                <form id="loginForm" onsubmit="return validateAndLogin(event)">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Enter username">
+                        <small class="error-text" id="usernameError"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter password">
+                        <small class="error-text" id="passwordError"></small>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="remember"> Remember me
+                        </label>
+                        <a href="#" class="forgot-link">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">
+                        <span>Login</span>
+                        <span class="loading-spinner" id="spinner" style="display: none;">⏳</span>
+                    </button>
+                </form>
+
+                <div class="demo-credentials">
+                    <p><strong>Demo Credentials:</strong></p>
+                    <div class="credential-list">
+                        <span onclick="fillCredentials('john', 'john123')">👤 john / john123</span>
+                        <span onclick="fillCredentials('emma', 'emma123')">👤 emma / emma123</span>
+                        <span onclick="fillCredentials('admin', 'admin123')">👑 admin / admin123</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="control-group">
-                <label>Filter by Department:</label>
-                <select id="departmentFilter">
-                    <option value="all">All Departments</option>
-                </select>
+            <div class="features-box">
+                <h3>✨ Features</h3>
+                <ul>
+                    <li>✅ Client-side validation</li>
+                    <li>✅ Server-side authentication</li>
+                    <li>✅ Session management</li>
+                    <li>✅ Dynamic error messages</li>
+                    <li>✅ Input sanitization</li>
+                    <li>✅ Remember me option</li>
+                </ul>
             </div>
-
-            <button onclick="loadStudents()" class="refresh-btn">🔄 Refresh Data</button>
         </div>
 
-        <div class="stats-container" id="stats">
-            <div class="stat-card loading-stats">Loading statistics...</div>
+        <div class="nav-links">
+            <a href="../Task2_StudentDashboard/" class="nav-link">← Task 2</a>
+            <a href="#" class="nav-link">Task 4 →</a>
         </div>
 
-        <table id="studentTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Department</th>
-                    <th>Registration Date</th>
-                </tr>
-            </thead>
-            <tbody id="studentBody">
-                <tr>
-                    <td colspan="4" class="loading">Loading data from server...</td>
-                </tr>
-            </tbody>
-        </table>
-        
         <div class="server-status">
-            <span class="status-dot"></span> Connected to localhost:3000
+            <span class="status-dot"></span>
+            <span>Task 3 Server | http://localhost:3000</span>
         </div>
     </div>
 
