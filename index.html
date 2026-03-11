@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 6: Automated Logging System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="task-header">
+            <span class="task-badge">Task 6</span>
+            <h1>📋 Automated Logging System</h1>
+        </div>
+        <p class="subtitle">Using MySQL Triggers & Views for Automatic Audit Logging</p>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="stats">
+            <div class="stat-card loading">Loading statistics...</div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('daily')">📅 Daily Activity View</button>
+            <button class="tab-btn" onclick="switchTab('employee')">👥 Employee Activity</button>
+            <button class="tab-btn" onclick="switchTab('sales')">💰 Sales Performance</button>
+            <button class="tab-btn" onclick="switchTab('inventory')">📦 Inventory Changes</button>
+            <button class="tab-btn" onclick="switchTab('users')">👤 User Summary</button>
+            <button class="tab-btn" onclick="switchTab('raw')">📝 Raw Audit Logs</button>
+        </div>
+
+        <!-- Daily Activity View Tab -->
+        <div id="daily-tab" class="tab-content active">
+            <h2>📅 Daily Activity Summary <small>(from daily_activity_view)</small></h2>
+            <div class="view-description">
+                <span class="view-badge">VIEW</span> Groups activities by day, table, and operation type
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Activity Date</th>
+                            <th>Table</th>
+                            <th>Operation</th>
+                            <th>Count</th>
+                            <th>Unique Records</th>
+                            <th>Users</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dailyTableBody">
+                        <tr><td colspan="6" class="loading">Loading daily activity...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Employee Activity View Tab -->
+        <div id="employee-tab" class="tab-content">
+            <h2>👥 Employee Activity Log <small>(from employee_activity_view)</small></h2>
+            <div class="view-description">
+                <span class="view-badge">VIEW</span> Detailed employee actions with JSON data
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Table</th>
+                            <th>Action</th>
+                            <th>Record</th>
+                            <th>Changed By</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        <tr><td colspan="6" class="loading">Loading employee activity...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Sales Performance View Tab -->
+        <div id="sales-tab" class="tab-content">
+            <h2>💰 Sales Performance View <small>(from sales_performance_view)</small></h2>
+            <div class="view-description">
+                <span class="view-badge">VIEW</span> Sales metrics with joins and rollup
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Payment Method</th>
+                            <th>Category</th>
+                            <th>Transactions</th>
+                            <th>Active Employees</th>
+                            <th>Revenue</th>
+                            <th>Avg Value</th>
+                            <th>Items Sold</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesTableBody">
+                        <tr><td colspan="8" class="loading">Loading sales data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Inventory Changes View Tab -->
+        <div id="inventory-tab" class="tab-content">
+            <h2>📦 Inventory Change Log <small>(from inventory_change_view)</small></h2>
+            <div class="view-description">
+                <span class="view-badge">VIEW</span> Product quantity and price changes from triggers
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Change Time</th>
+                            <th>Product</th>
+                            <th>Code</th>
+                            <th>Old Qty</th>
+                            <th>New Qty</th>
+                            <th>Change</th>
+                            <th>Old Price</th>
+                            <th>New Price</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                        <tr><td colspan="8" class="loading">Loading inventory changes...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- User Summary Tab -->
+        <div id="users-tab" class="tab-content">
+            <h2>👤 User Activity Summary <small>(from user_activity_summary)</small></h2>
+            <div class="view-description">
+                <span class="view-badge">VIEW</span> User action statistics and activity metrics
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Total Actions</th>
+                            <th>Inserts</th>
+                            <th>Updates</th>
+                            <th>Deletes</th>
+                            <th>First Action</th>
+                            <th>Last Action</th>
+                            <th>Active Days</th>
+                            <th>Tables</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="9" class="loading">Loading user summary...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Raw Audit Logs Tab -->
+        <div id="raw-tab" class="tab-content">
+            <h2>📝 Raw Audit Logs <small>(from audit_log table)</small></h2>
+            <div class="view-description">
+                <span class="trigger-badge">TRIGGER</span> Automatically populated by INSERT/UPDATE triggers
+            </div>
+            
+            <div class="filter-controls">
+                <select id="tableFilter" onchange="loadRawLogs()">
+                    <option value="">All Tables</option>
+                    <option value="employees">Employees</option>
+                    <option value="products">Products</option>
+                    <option value="sales">Sales</option>
+                </select>
+                
+                <select id="operationFilter" onchange="loadRawLogs()">
+                    <option value="">All Operations</option>
+                    <option value="INSERT">INSERT</option>
+                    <option value="UPDATE">UPDATE</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+                
+                <button onclick="testInsert()" class="test-btn">➕ Test INSERT Trigger</button>
+            </div>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Log ID</th>
+                            <th>Table</th>
+                            <th>Operation</th>
+                            <th>Record ID</th>
+                            <th>Changed At</th>
+                            <th>Changed By</th>
+                            <th>Old Data</th>
+                            <th>New Data</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rawLogsBody">
+                        <tr><td colspan="8" class="loading">Loading audit logs...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="how-it-works">
+            <h3>🔍 How It Works</h3>
+            <div class="trigger-grid">
+                <div class="trigger-card">
+                    <h4>📥 INSERT Triggers</h4>
+                    <p>AFTER INSERT on employees, products, sales</p>
+                    <pre class="sql-code">CREATE TRIGGER employees_insert_trigger
+AFTER INSERT ON employees
+FOR EACH ROW
+BEGIN
+    INSERT INTO audit_log...
+END;</pre>
+                </div>
+                
+                <div class="trigger-card">
+                    <h4>📝 UPDATE Triggers</h4>
+                    <p>AFTER UPDATE on employees, products</p>
+                    <pre class="sql-code">CREATE TRIGGER products_update_trigger
+AFTER UPDATE ON products
+FOR EACH ROW
+BEGIN
+    INSERT INTO audit_log 
+    (old_data, new_data)...
+END;</pre>
+                </div>
+                
+                <div class="trigger-card">
+                    <h4>👁️ Views</h4>
+                    <p>Daily activity, employee logs, sales performance</p>
+                    <pre class="sql-code">CREATE VIEW daily_activity_view AS
+SELECT DATE(changed_at), 
+       table_name, 
+       operation_type,
+       COUNT(*)...
+FROM audit_log
+GROUP BY...;</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="../Task5_PaymentSimulation/" class="nav-link">← Task 5</a>
+            <a href="#" class="nav-link">Task 7 →</a>
+        </div>
+
+        <!-- Database Info -->
+        <div class="db-info">
+            <span class="db-dot"></span>
+            <span>Connected to MySQL | Database: logging_system</span>
+            <span class="trigger-badge">AFTER INSERT/UPDATE Triggers Active</span>
+            <span class="view-badge">5 Views Created</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
