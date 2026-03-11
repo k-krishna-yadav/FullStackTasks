@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 4: Order Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="task-header">
+            <span class="task-badge">Task 4</span>
+            <h1>📦 Order Management System</h1>
+        </div>
+        <p class="subtitle">Using SQL Joins, Subqueries, and ORDER BY</p>
+
+        <!-- Key Insights Section -->
+        <div class="insights-section">
+            <h2>🔍 Key Insights</h2>
+            <div class="insights-grid" id="insights">
+                <div class="insight-card loading">Loading insights...</div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('customers')">👥 Customers</button>
+            <button class="tab-btn" onclick="switchTab('products')">📱 Products</button>
+            <button class="tab-btn" onclick="switchTab('orders')">📋 Orders</button>
+        </div>
+
+        <!-- Customers Tab -->
+        <div id="customers-tab" class="tab-content active">
+            <h2>Customer List <small>(with order statistics)</small></h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>City</th>
+                            <th>Total Orders</th>
+                            <th>Total Spent</th>
+                            <th>Last Order</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <tr><td colspan="8" class="loading">Loading customers...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Products Tab -->
+        <div id="products-tab" class="tab-content">
+            <h2>Product List <small>(with sales statistics)</small></h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Total Sold</th>
+                            <th>Revenue</th>
+                            <th>Times Ordered</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <tr><td colspan="8" class="loading">Loading products...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Orders Tab -->
+        <div id="orders-tab" class="tab-content">
+            <h2>Order Summary by Status</h2>
+            <div class="order-stats-grid" id="orderStats"></div>
+            
+            <h2 style="margin-top: 30px;">Customer Order History</h2>
+            <div class="customer-selector">
+                <select id="customerSelect" onchange="loadCustomerOrders()">
+                    <option value="">Select a customer</option>
+                </select>
+            </div>
+            <div id="customerOrders" class="orders-list"></div>
+        </div>
+
+        <!-- Order Details Modal -->
+        <div id="orderModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h3>Order Details</h3>
+                <div id="orderDetails"></div>
+            </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <div class="nav-links">
+            <a href="../Task3_LoginSystem/" class="nav-link">← Task 3</a>
+            <a href="#" class="nav-link">Task 5 →</a>
+        </div>
+
+        <!-- Database Info -->
+        <div class="db-info">
+            <span class="db-dot"></span>
+            <span>Connected to MySQL | Database: order_management</span>
+            <span class="sql-badge">Using JOINs • Subqueries • ORDER BY</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
