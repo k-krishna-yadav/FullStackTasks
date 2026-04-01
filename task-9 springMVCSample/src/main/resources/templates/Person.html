@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Person Info</title>
+</head>
+<body>
+    <h1>Person Details</h1>
+    
+    <p>ID: <span th:text="${person.id}"></span></p>
+<p>Name: <span th:text="${person.nameString}"></span></p>
+
+<form>
+    <label>ID:</label>
+    <input type="text" th:value="${person.id}" readonly />
+    <br><br>
+
+    <label>Name:</label>
+    <input type="text" th:value="${person.nameString}" />
+</form>
+
+</body>
+
+</html>
